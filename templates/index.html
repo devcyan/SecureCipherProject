@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Secure Ciphertext Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .db-link {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            color: #666;
+            font-size: 0.9em;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Secure Ciphertext Encryption & Decryption</h1>
+        
+        <form action="/process" method="post">
+            <label>Enter Text:</label>
+            <textarea name="plaintext" required>{{ text }}</textarea>
+            
+            <label>Choose Encryption Method:</label>
+            <select name="encryption-method" id="methodSelector">
+                <option value="caesar">Caesar Cipher</option>
+                <option value="substitution">Substitution Cipher</option>
+                <option value="vigenere">Vigenère Cipher</option>
+                <option value="xor">XOR Cipher</option>
+                <option value="rail_fence">Rail Fence Cipher</option>
+                <option value="playfair">Playfair Cipher</option>
+            </select>
+
+            <div id="vigenereParams" class="cipher-param">
+                <label>Vigenère Keyword:</label>
+                <input type="text" name="keyword">
+            </div>
+            <div id="xorParams" class="cipher-param">
+                <label>XOR Key (0-255):</label>
+                <input type="number" name="key" min="0" max="255" value="0">
+            </div>
+            <div id="railParams" class="cipher-param">
+                <label>Rail Fence Rails:</label>
+                <input type="number" name="rails" min="2" value="3">
+            </div>
+            <div id="playfairParams" class="cipher-param">
+                <label>Playfair Keyword:</label>
+                <input type="text" name="keyword">
+            </div>
+
+            <button type="submit" name="action" value="encrypt">Encrypt</button>
+            <button type="submit" name="action" value="decrypt">Decrypt</button>
+            <button type="submit" name="action" value="analyze">Analyze Password</button>
+        </form>
+        
+        <h2>Output:</h2>
+        <textarea readonly>{{ output }}</textarea>
+    </div>
+
+    <a href="/view-data" class="db-link">DB</a>
+
+    <script>
+        document.getElementById("methodSelector").addEventListener("change", function() {
+            const method = this.value;
+            document.querySelectorAll(".cipher-param").forEach(div => div.style.display = "none");
+            if (method === "vigenere") document.getElementById("vigenereParams").style.display = "block";
+            if (method === "xor") document.getElementById("xorParams").style.display = "block";
+            if (method === "rail_fence") document.getElementById("railParams").style.display = "block";
+            if (method === "playfair") document.getElementById("playfairParams").style.display = "block";
+        });
+        document.getElementById("methodSelector").dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>
